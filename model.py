@@ -22,7 +22,7 @@ class Siamese(nn.Module):
         out2 = self.forward_one(x2)
         dis = torch.abs(out1 - out2)
         out = self.out(dis)
-        return self.sigmoid(out)
+        return out
 
 
 # for test
