@@ -89,6 +89,10 @@ if __name__ == '__main__':
         else:
             img1, img2, label = Variable(img1), Variable(img2), Variable(label)
         optimizer.zero_grad()
+        
+        img1 = torch.unsqueeze(img1, dim=0)
+        img2 = torch.unsqueeze(img2, dim=0)
+        
         output = net.forward(img1, img2)
         loss = loss_fn(output, label)
         loss_val += loss.item()
