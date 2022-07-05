@@ -4,24 +4,11 @@ import torch.nn.functional as F
 
 
 class Siamese(nn.Module):
-
     def __init__(self):
         super(Siamese, self).__init__()
-        self.conv = nn.Sequential(
-            nn.Conv2d(3, 64, 10),  # 64@96*96
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(2),  # 64@48*48
-            nn.Conv2d(64, 128, 7),
-            nn.ReLU(),    # 128@42*42
-            nn.MaxPool2d(2),   # 128@21*21
-            nn.Conv2d(128, 128, 4),
-            nn.ReLU(), # 128@18*18
-            nn.MaxPool2d(2), # 128@9*9
-            nn.Conv2d(128, 256, 4),
-            nn.ReLU(),   # 256@6*6
-        )
-        self.liner = nn.Sequential(nn.Linear(262144, 4096), nn.Sigmoid())
-        self.out = nn.Linear(4096, 1)
+        self.conv = models.resnet18(pretrained=True)
+        self.liner = nn.Sequential(nn.Linear(1000, 128), nn.Sigmoid())
+        self.out = nn.Linear(128, 1)
         self.sigmoid = torch.nn.Sigmoid()
 
     def forward_one(self, x):
@@ -36,7 +23,6 @@ class Siamese(nn.Module):
         dis = torch.abs(out1 - out2)
         out = self.out(dis)
         return self.sigmoid(out)
-#         return out
 
 
 # for test
