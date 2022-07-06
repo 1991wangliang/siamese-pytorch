@@ -24,10 +24,7 @@ mkdir models
 ```
 - train and test by running
 ```shell
-python3 train.py --train_path omniglot/python/images_background \
-                 --test_path  omniglot/python/images_evaluation \
-                 --gpu_ids 0 \
-                 --model_path models
+python3 train.py --train_path omniglot/python/images_background --test_path  omniglot/python/images_evaluation --gpu_ids 0,1 --model_path models image_channel 1 
 ```
 
 ## experiment result

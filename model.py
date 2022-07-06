@@ -4,9 +4,16 @@ import torch.nn.functional as F
 from torchvision import models
 
 class Siamese(nn.Module):
-    def __init__(self):
+    def __init__(self,channel=1):
         super(Siamese, self).__init__()
-        self.conv = models.resnet18(pretrained=True)
+        
+        resnet18 = models.resnet18(pretrained=True)
+        
+        if channel == 1 :
+            resnet18.conv1 = torch.nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)    
+            
+        self.conv = resnet18
+        # self.conv = models.resnet18(pretrained=True)
         self.liner = nn.Sequential(nn.Linear(1000, 128), nn.Sigmoid())
         self.out = nn.Linear(128, 1)
         self.sigmoid = torch.nn.Sigmoid()
