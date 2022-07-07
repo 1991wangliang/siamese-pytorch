@@ -104,7 +104,7 @@ if __name__ == '__main__':
         if batch_id % Flags.test_every == 0:
             right, error = 0, 0
             for _, (test1, test2) in enumerate(testLoader, 1):
-                if Flags.cuda:
+                if enableCuda:
                     test1, test2 = test1.cuda(), test2.cuda()
                 test1, test2 = Variable(test1), Variable(test2)
                 output = net.forward(test1, test2).data.cpu().numpy()
