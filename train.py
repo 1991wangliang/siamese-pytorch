@@ -60,12 +60,14 @@ if __name__ == '__main__':
     loss_fn = torch.nn.BCEWithLogitsLoss(size_average=True)
     net = Siamese(Flags.image_channel)
 
+    enableCuda = False
     if len(Flags.gpu_ids.split(",")) > 1:               
         os.environ["CUDA_VISIBLE_DEVICES"] = Flags.gpu_ids
         print("use gpu:", Flags.gpu_ids, "to train.")                
         # multi gpu        
         net.cuda() 
         net = torch.nn.DataParallel(net)
+        enableCuda = True
     else:
         print("use cpu: to train.")
 
@@ -82,7 +84,7 @@ if __name__ == '__main__':
     for batch_id, (img1, img2, label) in enumerate(trainLoader, 1):
         if batch_id > Flags.max_iter:
             break
-        if Flags.cuda:
+        if enableCuda:
             img1, img2, label = Variable(img1.cuda()), Variable(img2.cuda()), Variable(label.cuda())
         else:
             img1, img2, label = Variable(img1), Variable(img2), Variable(label)
