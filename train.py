@@ -20,7 +20,6 @@ import os
 if __name__ == '__main__':
 
     Flags = gflags.FLAGS
-    gflags.DEFINE_bool("cuda", False, "use cuda")
     gflags.DEFINE_string("train_path", "/home/data/pin/data/omniglot/images_background", "training folder")
     gflags.DEFINE_string("test_path", "/home/data/pin/data/omniglot/images_evaluation", 'path of testing folder')
     gflags.DEFINE_integer("way", 20, "how much way one-shot learning")
@@ -48,10 +47,8 @@ if __name__ == '__main__':
         # transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
 
-
     # train_dataset = dset.ImageFolder(root=Flags.train_path)
     # test_dataset = dset.ImageFolder(root=Flags.test_path)
-
 
 
     trainSet = OmniglotTrain(Flags.train_path, transform=data_transforms)
@@ -63,13 +60,14 @@ if __name__ == '__main__':
     loss_fn = torch.nn.BCEWithLogitsLoss(size_average=True)
     net = Siamese(Flags.image_channel)
 
-    if Flags.cuda:
-        net.cuda()        
+    if len(Flags.gpu_ids.split(",")) > 1:               
         os.environ["CUDA_VISIBLE_DEVICES"] = Flags.gpu_ids
-        print("use gpu:", Flags.gpu_ids, "to train.")
-        # multi gpu
-        if len(Flags.gpu_ids.split(",")) > 1:
-            net = torch.nn.DataParallel(net)
+        print("use gpu:", Flags.gpu_ids, "to train.")                
+        # multi gpu        
+        net.cuda() 
+        net = torch.nn.DataParallel(net)
+    else:
+        print("use cpu: to train.")
 
     net.train()
 
